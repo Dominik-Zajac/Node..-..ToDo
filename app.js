@@ -34,7 +34,7 @@ const handleData = (type, title) => {
     //title (string || null)
 
     const data = fs.readFileSync('data.json');
-    const tasks = JSON.parse(data);
+    let tasks = JSON.parse(data);
 
     if (type === 1 || type === 2) {
         const isExisted = tasks.find(task => task.title === title) ? true : false;
@@ -50,6 +50,11 @@ const handleData = (type, title) => {
 
     switch (type) {
         case 1:
+            tasks = tasks.map((task, index) => ({
+                id: index + 1,
+                title: task.title
+            }))
+
             const id = tasks.length + 1;
             tasks.push({
                 id,
@@ -64,6 +69,10 @@ const handleData = (type, title) => {
         case 2:
             const index = tasks.findIndex(task => task.title === title);
             tasks.splice(index, 1);
+            tasks = tasks.map((task, index) => ({
+                id: index + 1,
+                title: task.title
+            }))
             dataJSON = JSON.stringify(tasks);
             fs.writeFile('data.json', dataJSON, 'utf8', err => {
                 if (err) throw err;
